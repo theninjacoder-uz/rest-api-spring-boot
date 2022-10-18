@@ -1,0 +1,6 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
+    implementation project(':model')
+    implementation project(':repository')
+}

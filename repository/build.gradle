@@ -1,0 +1,5 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.6.9.Final'
+    implementation project(':model')
+}

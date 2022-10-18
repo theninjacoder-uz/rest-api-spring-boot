@@ -1,0 +1,5 @@
+rootProject.name = 'rest-api-spring-boot'
+include 'controller'
+include 'model'
+include 'repository'
+include 'service'
