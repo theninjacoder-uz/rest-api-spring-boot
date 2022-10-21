@@ -22,7 +22,7 @@ public class GiftCertificate extends BaseEntity {
     private BigDecimal price;
     private Integer duration;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "gift_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")

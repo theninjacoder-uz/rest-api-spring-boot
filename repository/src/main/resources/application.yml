@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gift_certificate_db
+    username: postgres
+    password: 8
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update

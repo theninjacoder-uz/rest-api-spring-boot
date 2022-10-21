@@ -19,6 +19,10 @@ import java.math.BigDecimal;
 public class Order extends BaseEntity{
 
     private BigDecimal price;
+
     @ManyToOne
     private GiftCertificate giftCertificate;
+
+    @ManyToOne
+    private User user;
 }

@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppResponseDto<T> {
+public class AppResponseDto<T> extends RepresentationModel<AppResponseDto<?>> {
     @JsonProperty("http_status")
     private int httpStatus;
     @JsonProperty("message")

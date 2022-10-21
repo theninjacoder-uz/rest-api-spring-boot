@@ -21,7 +21,7 @@ public class User extends BaseEntity{
     @Column(unique = true)
     private String username;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "user")
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Order> orders = new ArrayList<>();
 }

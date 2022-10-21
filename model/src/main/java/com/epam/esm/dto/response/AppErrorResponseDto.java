@@ -11,8 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppErrorResponseDto {
-    @JsonProperty("http_status")
-    private int httpStatus;
     @JsonProperty("error_code")
     private int errorCode;
     @JsonProperty("error_message")
