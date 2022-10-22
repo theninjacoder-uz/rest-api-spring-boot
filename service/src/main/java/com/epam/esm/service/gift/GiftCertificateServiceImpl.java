@@ -71,7 +71,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .orElseThrow(() -> {
                     throw new ResourceNotFoundException(id);
                 });
-
+        // save tags if they are not exists in db, get them and set entity tag list property
+        if (type.getTags() != null) {
+            certificate.setTags(
+                    certificate.getTags().stream()
+                            .map(tag -> tagRepo.saveTagByNameIfNotExists(tag.getName()))
+                            .collect(Collectors.toList()));
+        }
         modelMapper.map(type, certificate);
         return new AppResponseDto<>(
                 HttpStatus.OK.value(), "successfully updated",
@@ -81,7 +87,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public AppResponseDto<Boolean> delete(Long id) {
         boolean exists = giftCertificateRepo.existsById(id);
-        if(!exists){
+        if (!exists) {
             throw new ResourceNotFoundException(id);
         }
         giftCertificateRepo.deleteById(id);
@@ -94,8 +100,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     ) {
         Sort multiSort = getSortingParams(sortTerm);
         PageRequest pageRequest = multiSort != null ? PageRequest.of(page, size, multiSort) : PageRequest.of(page, size);
-        Page<GiftCertificate> certificatePage = giftCertificateRepo
-                .searchGiftCertificateByNameContainingOrDescriptionContaining(searchTerm, searchTerm, pageRequest);
+        Page<GiftCertificate> certificatePage = searchTerm != null ? giftCertificateRepo
+                .searchGiftCertificateByNameContainingOrDescriptionContaining(searchTerm, searchTerm, pageRequest)
+                : giftCertificateRepo.findAll(pageRequest);
 
         return new AppResponseDto<>(HttpStatus.OK.value(),
                 "gift certificate list",
@@ -110,13 +117,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Page<GiftCertificate> certificatePage = giftCertificateRepo.getPageBySearchingTermAndSort(tagNameList, tagNameList.size(), pageRequest);
 
         return new AppResponseDto<>(HttpStatus.OK.value(),
-            "gift certificate list",
+                "gift certificate list",
                 certificatePage.map(giftCertificate -> modelMapper.map(giftCertificate, GiftCertificateResponseDto.class)).toList()
         );
     }
 
     private Sort getSortingParams(String sortTerm) {
-        if(sortTerm == null){
+        if (sortTerm == null) {
             return null;
         }
         String[] strings = sortTerm.split(",");

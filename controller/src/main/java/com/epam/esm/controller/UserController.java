@@ -4,6 +4,7 @@ import com.epam.esm.dto.request.UserRequestDto;
 import com.epam.esm.dto.response.AppResponseDto;
 import com.epam.esm.dto.response.OrderResponseDto;
 import com.epam.esm.dto.response.UserResponseDto;
+import com.epam.esm.link.LinkProvider;
 import com.epam.esm.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,16 +19,21 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final LinkProvider linkProvider;
     private final static String PAGE = "0";
     private final static String SIZE = "10";
     @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<UserResponseDto>> create(@RequestBody UserRequestDto userRequestDto){
-        return ResponseEntity.ok(userService.create(userRequestDto));
+        AppResponseDto<UserResponseDto> appResponseDto = userService.create(userRequestDto);
+        linkProvider.addLinkToUserResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @GetMapping(value = "/{id}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<AppResponseDto<UserResponseDto>> get(@PathVariable Long id){
-        return ResponseEntity.ok(userService.get(id));
+        AppResponseDto<UserResponseDto> appResponseDto = userService.get(id);
+        linkProvider.addLinkToUserResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @GetMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +42,9 @@ public class UserController {
             @RequestParam(value = "size", required = false, defaultValue = SIZE) int size,
             @RequestParam(value = "sort", required = false) String sortTerm
     ){
-        return ResponseEntity.ok(userService.getList(page, size, sortTerm));
+        AppResponseDto<List<UserResponseDto>> appResponseDto = userService.getList(page, size, sortTerm);
+        userService.getList(page, size, sortTerm);
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @GetMapping(value = "/{userId}/orders/{orderId}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +52,9 @@ public class UserController {
             @PathVariable("userId") Long userId,
             @PathVariable("orderId") Long orderId
     ){
-        return ResponseEntity.ok(userService.getUserOrder(userId, orderId));
+        AppResponseDto<OrderResponseDto> appResponseDto = userService.getUserOrder(userId, orderId);
+        userService.getUserOrder(userId, orderId);
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @GetMapping(value = "/{userId}/orders",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +63,9 @@ public class UserController {
             @RequestParam(value = "page", required = false, defaultValue = PAGE) int page,
             @RequestParam(value = "size", required = false, defaultValue = SIZE) int size
     ){
-        return ResponseEntity.ok(userService.getUserOrders(userId, page, size));
+        AppResponseDto<List<OrderResponseDto>> appResponseDto = userService.getUserOrders(userId, page, size);
+        linkProvider.addLinkToOrderResponse(appResponseDto.getData().get(0));
+        return ResponseEntity.ok(appResponseDto);
     }
 
 

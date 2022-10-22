@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.request.GiftCertificateRequestDto;
 import com.epam.esm.dto.response.AppResponseDto;
 import com.epam.esm.dto.response.GiftCertificateResponseDto;
+import com.epam.esm.link.LinkProvider;
 import com.epam.esm.service.gift.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,21 +18,25 @@ import java.util.List;
 @RequestMapping("/api/v1/certificates")
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
-
+    private final LinkProvider linkProvider;
     private static final String PAGE = "0";
     private static final String SIZE = "10";
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<GiftCertificateResponseDto>> create(
             @RequestBody @Valid GiftCertificateRequestDto requestDto){
-        return ResponseEntity.ok(giftCertificateService.create(requestDto));
+        AppResponseDto<GiftCertificateResponseDto> appResponseDto = giftCertificateService.create(requestDto);
+        linkProvider.addLinkToGiftResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<GiftCertificateResponseDto>> get(
             @PathVariable Long id){
-        return ResponseEntity.ok(giftCertificateService.get(id));
+        AppResponseDto<GiftCertificateResponseDto> appResponseDto = giftCertificateService.get(id);
+        linkProvider.addLinkToGiftResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,7 +44,9 @@ public class GiftCertificateController {
             @PathVariable Long id,
             @RequestBody @Valid GiftCertificateRequestDto requestDto
     ){
-        return ResponseEntity.ok(giftCertificateService.update(id, requestDto));
+        AppResponseDto<GiftCertificateResponseDto> appResponseDto = giftCertificateService.update(id, requestDto);
+        linkProvider.addLinkToGiftResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +62,9 @@ public class GiftCertificateController {
             @RequestParam(required = false, name = "size", defaultValue = SIZE) int size
 
     ){
-        return ResponseEntity.ok(giftCertificateService.getList(searchTerm, sortTerm, page, size));
+        AppResponseDto<List<GiftCertificateResponseDto>> appResponseDto = giftCertificateService.getList(searchTerm, sortTerm, page, size);
+        linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @GetMapping(value = "/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +74,9 @@ public class GiftCertificateController {
             @RequestParam(required = false, name = "page", defaultValue = PAGE) int page,
             @RequestParam(required = false, name = "size", defaultValue = SIZE) int size
     ){
-        return ResponseEntity.ok(giftCertificateService.getPageByTagList(tagNameList, sortTerm, page, size));
+        AppResponseDto<List<GiftCertificateResponseDto>> appResponseDto = giftCertificateService.getPageByTagList(tagNameList, sortTerm, page, size);
+        linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
+        return ResponseEntity.ok(appResponseDto);
     }
 
 

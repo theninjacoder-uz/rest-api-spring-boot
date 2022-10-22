@@ -26,12 +26,16 @@ public class TagController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(
             @RequestBody @Valid TagRequestDto requestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tagService.create(requestDto));
+        AppResponseDto<TagResponseDto> appResponseDto = tagService.create(requestDto);
+        linkProvider.addLinkToTagResponse(appResponseDto.getData());
+        return ResponseEntity.status(HttpStatus.CREATED).body(appResponseDto);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> get(@PathVariable Long id) {
-        return ResponseEntity.ok(tagService.get(id));
+        AppResponseDto<TagResponseDto> appResponseDto = tagService.get(id);
+        linkProvider.addLinkToTagResponse(appResponseDto.getData());
+        return ResponseEntity.ok(appResponseDto);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +50,7 @@ public class TagController {
             @RequestParam(value = "sort", required = false) String sortTerm
             ) {
         AppResponseDto<List<TagResponseDto>> list = tagService.getList(page, size, sortTerm);
-        linkProvider.addLinkToTagResponse(list);
+        linkProvider.addLinkToTagResponse(list.getData().get(0));
         return ResponseEntity.ok(list);
     }
 }

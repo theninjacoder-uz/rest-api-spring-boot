@@ -2,6 +2,7 @@ package com.epam.esm.service.user;
 
 import com.epam.esm.dto.request.UserRequestDto;
 import com.epam.esm.dto.response.AppResponseDto;
+import com.epam.esm.dto.response.GiftCertificateResponseDto;
 import com.epam.esm.dto.response.OrderResponseDto;
 import com.epam.esm.dto.response.UserResponseDto;
 import com.epam.esm.entity.Order;
@@ -21,25 +22,28 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final OrderRepo orderRepo;
     private final ModelMapper modelMapper;
+
     @Override
     public AppResponseDto<UserResponseDto> create(UserRequestDto type) {
         try {
             User user = modelMapper.map(type, User.class);
             return new AppResponseDto<>(HttpStatus.CREATED.value(), "user successfully created",
-                    modelMapper.map(userRepo.save(user), UserResponseDto.class)) ;
-        } catch (Exception e){
+                    modelMapper.map(userRepo.save(user), UserResponseDto.class));
+        } catch (Exception e) {
             throw new ResourceAlreadyExistException("user already exist with the username: " + type.getUsername());
         }
     }
 
     @Override
     public AppResponseDto<UserResponseDto> get(Long id) {
-        User user = userRepo.findById(id).orElseThrow(() -> {throw new ResourceNotFoundException(id);});
+        User user = userRepo.findById(id).orElseThrow(() -> {
+            throw new ResourceNotFoundException(id);
+        });
         return new AppResponseDto<>(HttpStatus.OK.value(), "user", modelMapper.map(user, UserResponseDto.class));
     }
 
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService{
     public AppResponseDto<List<OrderResponseDto>> getUserOrders(Long userId, int page, int size) {
 
         boolean exists = userRepo.existsById(userId);
-        if(!exists){
+        if (!exists) {
             throw new ResourceNotFoundException("user not found with the id: " + userId);
         }
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -73,11 +77,16 @@ public class UserServiceImpl implements UserService{
         Order order = orderRepo.findOrderByIdAndUser_Id(orderId, userId).orElseThrow(() -> {
             throw new ResourceNotFoundException(String.format("user with the id: %d and order with the id: %d is not exist", userId, orderId));
         });
-        return new AppResponseDto<>(HttpStatus.OK.value(), "user order", modelMapper.map(order, OrderResponseDto.class));
+
+        return new AppResponseDto<>(
+                HttpStatus.OK.value(),
+                "user order",
+                modelMapper.map(order, OrderResponseDto.class));
     }
 
+
     private Sort getSortingParams(String sortTerm) {
-        if(sortTerm == null){
+        if (sortTerm == null) {
             return null;
         }
         String[] strings = sortTerm.split(",");

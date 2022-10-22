@@ -11,7 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppResponseDto<T> extends RepresentationModel<AppResponseDto<?>> {
+public class AppResponseDto<T> {
     @JsonProperty("http_status")
     private int httpStatus;
     @JsonProperty("message")

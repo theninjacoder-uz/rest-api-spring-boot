@@ -1,11 +1,10 @@
 package com.epam.esm.link;
 
-import com.epam.esm.dto.response.AppResponseDto;
-import com.epam.esm.dto.response.TagResponseDto;
+import com.epam.esm.dto.response.*;
 
 public interface LinkProvider {
-    void addLinkToTagResponse(AppResponseDto<?> responseDto);
-    void addLinkToGiftResponse(AppResponseDto<?> responseDto);
-    void addLinkToUserResponse(AppResponseDto<?> responseDto);
-    void addLinkToOrderResponse(AppResponseDto<?> responseDto);
+    void addLinkToTagResponse(TagResponseDto tagResponseDto);
+    void addLinkToGiftResponse(GiftCertificateResponseDto giftCertificateResponseDto);
+    void addLinkToUserResponse(UserResponseDto userResponseDto);
+    void addLinkToOrderResponse(OrderResponseDto orderResponseDto);
 }
