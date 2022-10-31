@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ResourceNotFoundException(orderId);
         });
         return new AppResponseDto<>(HttpStatus.CREATED.value(),
-                "order created",
+                "order",
                 modelMapper.map(order, OrderResponseDto.class)
         );
     }
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     public AppResponseDto<List<OrderResponseDto>> getPage(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return new AppResponseDto<>(HttpStatus.CREATED.value(),
-                "order created",
+                "order page",
                 orderRepo.findAll(pageRequest).map(order -> modelMapper.map(order, OrderResponseDto.class)).toList()
         );
     }

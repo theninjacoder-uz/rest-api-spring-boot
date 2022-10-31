@@ -36,7 +36,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             // save tags if they are not exists in db, get them and set entity tag list property
             giftCertificate.setTags(
                     giftCertificate.getTags().stream()
-                            .map(tag -> tagRepo.saveTagByNameIfNotExists(tag.getName()))
+                                .map(tag -> tagRepo.saveTagByNameIfNotExists(tag.getName()))
                             .collect(Collectors.toList()));
             // save gift certificate
             GiftCertificate save = giftCertificateRepo.save(giftCertificate);

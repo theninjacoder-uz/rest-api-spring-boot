@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TagRepo extends JpaRepository<Tag, Long> {
@@ -18,6 +19,10 @@ public interface TagRepo extends JpaRepository<Tag, Long> {
             nativeQuery = true)
     Tag saveTagByNameIfNotExists(@Param("tagName") String tagName);
 
-    @Query("SELECT t FROM Tag t WHERE t.name IN :name")
-    List<Tag> findAllByNameIsIn(@Param("name") Iterable<String> tagNameList);
+    @Query(value = "SELECT * FROM tag t WHERE t.id = ( " +
+            "SELECT gct.tag_id FROM gift_certificate_tag gct WHERE gct.tag_id IN " +
+            "(SELECT ord.gift_certificate_id FROM orders ord WHERE ord.user_id = " +
+            "(SELECT o.user_id FROM orders o GROUP BY o.user_id ORDER BY SUM(o.price) DESC LIMIT 1)) " +
+            "GROUP BY gct.tag_id ORDER BY COUNT(*) DESC LIMIT 1);", nativeQuery = true)
+    Optional<Tag> findMostUsedTag();
 }

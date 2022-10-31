@@ -12,4 +12,5 @@ import java.util.List;
 @Service
 public interface TagService extends BaseService<TagRequestDto, TagResponseDto> {
     AppResponseDto<List<TagResponseDto>> getList(int page, int size, String sortTerm);
+    AppResponseDto<TagResponseDto> getMostUsedTagOfUser();
 }

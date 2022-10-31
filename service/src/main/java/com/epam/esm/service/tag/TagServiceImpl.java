@@ -47,6 +47,8 @@ public class TagServiceImpl implements TagService {
             throw new ResourceNotFoundException(id);
         });
         modelMapper.map(type, tag);
+        tag = tagRepo.save(tag);
+
         return new AppResponseDto<>(
                 HttpStatus.OK.value(),
                 "successfully updated",
@@ -70,6 +72,18 @@ public class TagServiceImpl implements TagService {
         PageRequest pageRequest = multiSort == null ? PageRequest.of(page, size) : PageRequest.of(page, size, multiSort) ;
         return new AppResponseDto<>(HttpStatus.OK.value(), "tag list",
                 tagRepo.findAll(pageRequest).map(tag -> modelMapper.map(tag, TagResponseDto.class)).toList()
+        );
+    }
+
+    @Override
+    public AppResponseDto<TagResponseDto> getMostUsedTagOfUser() {
+        Tag tag = tagRepo.findMostUsedTag().orElseThrow(() -> {
+            throw new ResourceNotFoundException("resource not found");
+        });
+        return new AppResponseDto<>(
+                HttpStatus.OK.value(),
+                "most used tag",
+                modelMapper.map(tag, TagResponseDto.class)
         );
     }
 

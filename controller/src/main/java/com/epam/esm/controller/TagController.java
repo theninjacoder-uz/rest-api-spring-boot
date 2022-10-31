@@ -24,7 +24,7 @@ public class TagController {
     private final static String SIZE = "10";
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(
+    public ResponseEntity<AppResponseDto<TagResponseDto>> create(
             @RequestBody @Valid TagRequestDto requestDto) {
         AppResponseDto<TagResponseDto> appResponseDto = tagService.create(requestDto);
         linkProvider.addLinkToTagResponse(appResponseDto.getData());
@@ -32,10 +32,15 @@ public class TagController {
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> get(@PathVariable Long id) {
+    public ResponseEntity<AppResponseDto<TagResponseDto>> get(@PathVariable Long id) {
         AppResponseDto<TagResponseDto> appResponseDto = tagService.get(id);
         linkProvider.addLinkToTagResponse(appResponseDto.getData());
         return ResponseEntity.ok(appResponseDto);
+    }
+
+    @GetMapping(value = "/popular", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponseDto<TagResponseDto>> getMostUsedTag(){
+        return ResponseEntity.ok(tagService.getMostUsedTagOfUser());
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +49,7 @@ public class TagController {
     }
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getList(
+    public ResponseEntity<AppResponseDto<List<TagResponseDto>>> getList(
             @RequestParam(value = "page", required = false, defaultValue = PAGE) int page,
             @RequestParam(value = "size", required = false, defaultValue = SIZE) int size,
             @RequestParam(value = "sort", required = false) String sortTerm
