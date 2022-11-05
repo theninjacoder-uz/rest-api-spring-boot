@@ -22,6 +22,5 @@ public class User extends BaseEntity{
     private String username;
 
     @OneToMany(mappedBy = "user")
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Order> orders = new ArrayList<>();
 }

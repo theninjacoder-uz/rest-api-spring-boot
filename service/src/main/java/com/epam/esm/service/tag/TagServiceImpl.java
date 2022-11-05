@@ -69,6 +69,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public AppResponseDto<List<TagResponseDto>> getList(int page, int size, String sortTerm) {
         Sort multiSort = getSortingParams(sortTerm);
+        //if multisort is null then ignore sorting strategy
         PageRequest pageRequest = multiSort == null ? PageRequest.of(page, size) : PageRequest.of(page, size, multiSort) ;
         return new AppResponseDto<>(HttpStatus.OK.value(), "tag list",
                 tagRepo.findAll(pageRequest).map(tag -> modelMapper.map(tag, TagResponseDto.class)).toList()
@@ -87,6 +88,7 @@ public class TagServiceImpl implements TagService {
         );
     }
 
+    //get sorting strategy from incoming parameters
     private Sort getSortingParams(String sortTerm) {
         if(sortTerm == null){
             return null;

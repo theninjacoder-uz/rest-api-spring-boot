@@ -20,8 +20,10 @@ public class UserController {
 
     private final UserService userService;
     private final LinkProvider linkProvider;
-    private final static String PAGE = "0";
-    private final static String SIZE = "10";
+    private final static String PAGE = "0"; //default page
+    private final static String SIZE = "10"; // default size
+
+    // create user (NOTE this is created only for the testing purpose)
     @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<UserResponseDto>> create(@RequestBody UserRequestDto userRequestDto){
         AppResponseDto<UserResponseDto> appResponseDto = userService.create(userRequestDto);
@@ -29,13 +31,15 @@ public class UserController {
         return ResponseEntity.ok(appResponseDto);
     }
 
+    // get user by id
     @GetMapping(value = "/{id}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<AppResponseDto<UserResponseDto>> get(@PathVariable Long id){
         AppResponseDto<UserResponseDto> appResponseDto = userService.get(id);
-        linkProvider.addLinkToUserResponse(appResponseDto.getData());
+        linkProvider.addLinkToUserResponse(appResponseDto.getData()); // link Hateoas
         return ResponseEntity.ok(appResponseDto);
     }
 
+    //get users page
     @GetMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<List<UserResponseDto>>> getList(
             @RequestParam(value = "page", required = false, defaultValue = PAGE) int page,
@@ -43,10 +47,11 @@ public class UserController {
             @RequestParam(value = "sort", required = false) String sortTerm
     ){
         AppResponseDto<List<UserResponseDto>> appResponseDto = userService.getList(page, size, sortTerm);
-        userService.getList(page, size, sortTerm);
+        userService.getList(page, size, sortTerm); //link Hateoas
         return ResponseEntity.ok(appResponseDto);
     }
 
+    // make an order with userId and orderId
     @GetMapping(value = "/{userId}/orders/{orderId}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<OrderResponseDto>> getUserOrder(
             @PathVariable("userId") Long userId,
@@ -57,6 +62,7 @@ public class UserController {
         return ResponseEntity.ok(appResponseDto);
     }
 
+    //Get user orders page by userId
     @GetMapping(value = "/{userId}/orders",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<List<OrderResponseDto>>> getUserOrders(
             @PathVariable("userId") Long userId,
@@ -64,7 +70,7 @@ public class UserController {
             @RequestParam(value = "size", required = false, defaultValue = SIZE) int size
     ){
         AppResponseDto<List<OrderResponseDto>> appResponseDto = userService.getUserOrders(userId, page, size);
-        linkProvider.addLinkToOrderResponse(appResponseDto.getData().get(0));
+        linkProvider.addLinkToOrderResponse(appResponseDto.getData().get(0)); // link Hateoas
         return ResponseEntity.ok(appResponseDto);
     }
 

@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 modelMapper.map(order, OrderResponseDto.class));
     }
 
-
+    //get sorting strategy from incoming parameters
     private Sort getSortingParams(String sortTerm) {
         if (sortTerm == null) {
             return null;

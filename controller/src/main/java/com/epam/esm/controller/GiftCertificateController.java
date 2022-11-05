@@ -19,26 +19,30 @@ import java.util.List;
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final LinkProvider linkProvider;
-    private static final String PAGE = "0";
-    private static final String SIZE = "10";
+    private static final String PAGE = "0"; //default page
+    private static final String SIZE = "10"; // default size
 
+    //Create Gift certificate with tags if new tag received save it tags table
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<GiftCertificateResponseDto>> create(
             @RequestBody @Valid GiftCertificateRequestDto requestDto){
         AppResponseDto<GiftCertificateResponseDto> appResponseDto = giftCertificateService.create(requestDto);
+        //link Hateoas
         linkProvider.addLinkToGiftResponse(appResponseDto.getData());
         return ResponseEntity.ok(appResponseDto);
     }
 
 
+    //Get certificate with ID
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<GiftCertificateResponseDto>> get(
             @PathVariable Long id){
         AppResponseDto<GiftCertificateResponseDto> appResponseDto = giftCertificateService.get(id);
+        //link Hateoas
         linkProvider.addLinkToGiftResponse(appResponseDto.getData());
         return ResponseEntity.ok(appResponseDto);
     }
-
+    //update certificate with id
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<GiftCertificateResponseDto>> update(
             @PathVariable Long id,
@@ -49,11 +53,13 @@ public class GiftCertificateController {
         return ResponseEntity.ok(appResponseDto);
     }
 
+    //Delete certificate by id
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponseDto<Boolean>> delete(@PathVariable Long id){
         return ResponseEntity.ok(giftCertificateService.delete(id));
     }
 
+    //get certificate page. Search by name + description and sort by fields
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getPage(
             @RequestParam(required = false, name = "search") String searchTerm,
@@ -63,10 +69,12 @@ public class GiftCertificateController {
 
     ){
         AppResponseDto<List<GiftCertificateResponseDto>> appResponseDto = giftCertificateService.getList(searchTerm, sortTerm, page, size);
+        //link Hateoas
         linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
         return ResponseEntity.ok(appResponseDto);
     }
 
+    //get certificate page by the list of tag names with capability of sorting based on fields
     @GetMapping(value = "/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getPageByTagNames(
             @RequestParam(required = false, name = "name") List<String> tagNameList,
@@ -75,6 +83,7 @@ public class GiftCertificateController {
             @RequestParam(required = false, name = "size", defaultValue = SIZE) int size
     ){
         AppResponseDto<List<GiftCertificateResponseDto>> appResponseDto = giftCertificateService.getPageByTagList(tagNameList, sortTerm, page, size);
+        //link Hateoas
         linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
         return ResponseEntity.ok(appResponseDto);
     }

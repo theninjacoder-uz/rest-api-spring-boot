@@ -29,10 +29,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public AppResponseDto<OrderResponseDto> create(Long userId, Long certificateId) {
+        //check certificate and get it or throw a custom exception
         GiftCertificate certificate = giftCertificateRepo.findById(certificateId)
                 .orElseThrow(() -> {
                     throw new ResourceNotFoundException(certificateId);
                 });
+        //check user and get it or throw a custom exception
         User user = userRepo.findById(userId).orElseThrow(() -> {
             throw new ResourceNotFoundException(userId);
         });

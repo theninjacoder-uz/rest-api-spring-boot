@@ -86,10 +86,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public AppResponseDto<Boolean> delete(Long id) {
+        //check if certificate exists or not
         boolean exists = giftCertificateRepo.existsById(id);
         if (!exists) {
             throw new ResourceNotFoundException(id);
         }
+        //delete by id
         giftCertificateRepo.deleteById(id);
         return new AppResponseDto<>(HttpStatus.NO_CONTENT.value(), "successfully deleted", true);
     }
@@ -99,6 +101,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             String searchTerm, String sortTerm, int page, int size
     ) {
         Sort multiSort = getSortingParams(sortTerm);
+        //if multisort is null then ignore sorting strategy
         PageRequest pageRequest = multiSort != null ? PageRequest.of(page, size, multiSort) : PageRequest.of(page, size);
         Page<GiftCertificate> certificatePage = searchTerm != null ? giftCertificateRepo
                 .searchGiftCertificateByNameContainingOrDescriptionContaining(searchTerm, searchTerm, pageRequest)
@@ -113,6 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public AppResponseDto<List<GiftCertificateResponseDto>> getPageByTagList(List<String> tagNameList, String sortingParams, int page, int size) {
         Sort multiSort = getSortingParams(sortingParams);
+        //if multisort is null then ignore sorting strategy
         PageRequest pageRequest = multiSort != null ? PageRequest.of(page, size, multiSort) : PageRequest.of(page, size);
         Page<GiftCertificate> certificatePage = giftCertificateRepo.getPageBySearchingTermAndSort(tagNameList, tagNameList.size(), pageRequest);
 
@@ -122,6 +126,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         );
     }
 
+    //get sorting strategy from incoming parameters
     private Sort getSortingParams(String sortTerm) {
         if (sortTerm == null) {
             return null;
