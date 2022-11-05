@@ -2,7 +2,6 @@ package com.epam.esm.service.user;
 
 import com.epam.esm.dto.request.UserRequestDto;
 import com.epam.esm.dto.response.AppResponseDto;
-import com.epam.esm.dto.response.GiftCertificateResponseDto;
 import com.epam.esm.dto.response.OrderResponseDto;
 import com.epam.esm.dto.response.UserResponseDto;
 import com.epam.esm.entity.Order;

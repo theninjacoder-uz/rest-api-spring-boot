@@ -48,7 +48,9 @@ public class OrderController {
             @RequestParam(required = false, name = "size", defaultValue = SIZE) int size
     ){
         AppResponseDto<List<OrderResponseDto>> appResponseDto = orderService.getPage(page, size);
-        linkProvider.addLinkToOrderResponse(appResponseDto.getData().get(0));  //link Hateoas
+        if(appResponseDto.getData().size() > 0){
+            linkProvider.addLinkToOrderResponse(appResponseDto.getData().get(0));  //link Hateoas
+        }
         return ResponseEntity.ok(appResponseDto);
     }
 }

@@ -84,7 +84,9 @@ public class GiftCertificateController {
     ){
         AppResponseDto<List<GiftCertificateResponseDto>> appResponseDto = giftCertificateService.getPageByTagList(tagNameList, sortTerm, page, size);
         //link Hateoas
-        linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
+        if(appResponseDto.getData().size() > 0){
+            linkProvider.addLinkToGiftResponse(appResponseDto.getData().get(0));
+        }
         return ResponseEntity.ok(appResponseDto);
     }
 
